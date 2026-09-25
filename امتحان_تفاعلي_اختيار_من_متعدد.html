@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>امتحان تفاعلي - أسئلة الاختيار من متعدد</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Cairo:wght@600;700;800;900&display=swap');
+
+  :root{
+    --navy-950:#050a17;
+    --navy-900:#0a1330;
+    --blue-700:#123a7a;
+    --cyan-400:#22d3ee;
+    --cyan-300:#67e8f9;
+    --gold:#f5b942;
+    --paper:#f2f5fb;
+    --ink:#0c1730;
+    --muted:#5b6b8c;
+    --card:#ffffff;
+    --line:#dde4f3;
+    --green:#1fae5c;
+    --green-bg:#e6f9ee;
+    --red:#e0402f;
+    --red-bg:#fdecea;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Almarai','Cairo',sans-serif;
+    background:linear-gradient(160deg,#eef2fb,#e3e9f8 60%);
+    color:var(--ink);
+    line-height:1.8;
+    padding-bottom:60px;
+  }
+
+  header.top-bar{
+    background:linear-gradient(135deg,var(--navy-950),var(--navy-900) 60%,var(--blue-700));
+    color:#fff;
+    padding:22px 18px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  header.top-bar h1{
+    margin:0 0 6px;
+    font-family:'Cairo',sans-serif;
+    font-weight:900;
+    font-size:24px;
+  }
+  header.top-bar p{
+    margin:0;
+    color:var(--cyan-300);
+    font-size:13px;
+    font-weight:700;
+  }
+
+  .exam-meta{
+    max-width:820px;
+    margin:18px auto 0;
+    padding:0 16px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+  }
+  .exam-meta .pill{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:8px 16px;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--blue-700);
+    box-shadow:0 2px 8px rgba(10,20,50,.06);
+  }
+
+  .scoreboard{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(10,20,50,.08);
+    padding:12px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    flex-wrap:wrap;
+  }
+  .scoreboard .sc-item{
+    text-align:center;
+  }
+  .scoreboard .sc-item .n{
+    font-size:20px;
+    font-weight:900;
+    color:var(--navy-900);
+  }
+  .scoreboard .sc-item.correct .n{color:var(--green);}
+  .scoreboard .sc-item.wrong .n{color:var(--red);}
+  .scoreboard .sc-item .l{
+    font-size:11px;
+    color:var(--muted);
+    font-weight:700;
+  }
+  .progress-wrap{
+    flex:1 1 220px;
+    max-width:320px;
+  }
+  .progress-bar{
+    background:#e8edf8;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+  }
+  .progress-bar .fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--cyan-400),var(--gold));
+    transition:width .3s ease;
+  }
+  .progress-wrap .p-label{
+    font-size:11px;
+    color:var(--muted);
+    text-align:center;
+    margin-top:4px;
+    font-weight:700;
+  }
+
+  main{
+    max-width:820px;
+    margin:24px auto;
+    padding:0 16px;
+  }
+
+  .q-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:18px 20px;
+    margin-bottom:16px;
+    box-shadow:0 3px 12px rgba(10,20,50,.05);
+    transition:box-shadow .2s ease;
+  }
+  .q-card.answered{box-shadow:0 6px 18px rgba(10,20,50,.1);}
+
+  .q-top{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .q-num-badge{
+    flex-shrink:0;
+    width:34px;height:34px;
+    border-radius:10px;
+    background:linear-gradient(135deg,var(--blue-700),var(--navy-950));
+    color:var(--cyan-300);
+    font-weight:900;
+    font-size:14px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .q-text{
+    font-weight:800;
+    font-size:15.5px;
+    color:var(--navy-900);
+    flex:1;
+  }
+  .q-points{
+    flex-shrink:0;
+    background:var(--gold);
+    color:#3a2600;
+    font-size:11px;
+    font-weight:800;
+    padding:4px 10px;
+    border-radius:14px;
+    white-space:nowrap;
+  }
+
+  .opt-list{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+    padding-right:46px;
+  }
+  .opt-btn{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-align:right;
+    width:100%;
+    background:#f7f9fd;
+    border:2px solid var(--line);
+    border-radius:11px;
+    padding:10px 14px;
+    font-family:inherit;
+    font-size:13.5px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .opt-btn:hover:not(:disabled){
+    border-color:var(--cyan-400);
+    background:#eef8fb;
+  }
+  .opt-btn .opt-letter{
+    flex-shrink:0;
+    width:24px;height:24px;
+    border-radius:7px;
+    background:#e4ebf7;
+    color:var(--blue-700);
+    font-weight:800;
+    font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .opt-btn:disabled{cursor:default;}
+
+  .opt-btn.correct-answer{
+    background:var(--green-bg);
+    border-color:var(--green);
+    color:#0d5c34;
+  }
+  .opt-btn.correct-answer .opt-letter{background:var(--green);color:#fff;}
+
+  .opt-btn.wrong-answer{
+    background:var(--red-bg);
+    border-color:var(--red);
+    color:#8a2417;
+  }
+  .opt-btn.wrong-answer .opt-letter{background:var(--red);color:#fff;}
+
+  .opt-btn.dim{opacity:.55;}
+
+  .feedback-tag{
+    margin-top:10px;
+    margin-right:46px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12.5px;
+    font-weight:800;
+    padding:5px 12px;
+    border-radius:14px;
+  }
+  .feedback-tag.ok{background:var(--green-bg);color:#0d5c34;}
+  .feedback-tag.no{background:var(--red-bg);color:#8a2417;}
+
+  .finish-bar{
+    max-width:820px;
+    margin:10px auto 40px;
+    padding:0 16px;
+    text-align:center;
+  }
+  .finish-btn{
+    background:linear-gradient(135deg,var(--blue-700),var(--navy-950));
+    color:#fff;
+    border:none;
+    padding:14px 40px;
+    font-size:15px;
+    font-weight:800;
+    font-family:inherit;
+    border-radius:30px;
+    cursor:pointer;
+    box-shadow:0 8px 22px rgba(10,20,50,.25);
+  }
+  .finish-btn:hover{filter:brightness(1.08);}
+
+  .result-panel{
+    display:none;
+    max-width:820px;
+    margin:0 auto 30px;
+    padding:0 16px;
+  }
+  .result-card{
+    background:linear-gradient(135deg,var(--navy-950),var(--navy-900));
+    color:#fff;
+    border-radius:20px;
+    padding:26px 24px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(10,20,50,.3);
+  }
+  .result-card .big-score{
+    font-size:42px;
+    font-weight:900;
+    color:var(--cyan-300);
+    margin:6px 0;
+  }
+  .result-card .out-of{font-size:15px;color:#cdd9f5;}
+  .result-card .msg{margin-top:10px;font-size:14px;color:#e7edfb;}
+  .result-card .stats-row{
+    display:flex;
+    justify-content:center;
+    gap:24px;
+    margin-top:16px;
+  }
+  .result-card .stats-row div{font-size:13px;color:#cdd9f5;}
+  .result-card .stats-row b{display:block;font-size:18px;color:#fff;}
+
+  .unanswered-note{
+    margin-top:10px;
+    font-size:12px;
+    color:#ffd9a8;
+  }
+
+  footer.bottom-note{
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    margin-top:20px;
+  }
+
+  @media (max-width:520px){
+    .opt-list{padding-right:0;}
+    .feedback-tag{margin-right:0;}
+    header.top-bar h1{font-size:19px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <h1>امتحان تفاعلي — تكنولوجيا المعلومات والذكاء الاصطناعي</h1>
+  <p>الوحدة الأولى • أسئلة الاختيار من متعدد • إعداد: م. شريف نبيل</p>
+</header>
+
+<div class="exam-meta">
+  <span class="pill">📄 عدد الأسئلة: 60 سؤال</span>
+  <span class="pill">⭐ درجة كل سؤال: 2 درجة</span>
+  <span class="pill">🏁 الدرجة النهائية: 120 درجة</span>
+</div>
+
+<div class="scoreboard">
+  <div class="sc-item">
+    <div class="n" id="answeredCount">0/60</div>
+    <div class="l">تمت الإجابة</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
+    <div class="p-label" id="progressLabel">0% مكتمل</div>
+  </div>
+  <div class="sc-item correct">
+    <div class="n" id="correctCount">0</div>
+    <div class="l">إجابات صحيحة</div>
+  </div>
+  <div class="sc-item wrong">
+    <div class="n" id="wrongCount">0</div>
+    <div class="l">إجابات خاطئة</div>
+  </div>
+</div>
+
+<main id="questionsContainer"></main>
+
+<div class="finish-bar">
+  <button class="finish-btn" id="finishBtn">إنهاء الامتحان وعرض النتيجة</button>
+</div>
+
+<div class="result-panel" id="resultPanel">
+  <div class="result-card">
+    <div class="out-of">نتيجتك النهائية</div>
+    <div class="big-score" id="finalScore">0 / 120</div>
+    <div class="msg" id="finalMsg"></div>
+    <div class="stats-row">
+      <div><b id="finalCorrect">0</b>صحيحة</div>
+      <div><b id="finalWrong">0</b>خاطئة</div>
+      <div><b id="finalSkipped">0</b>بدون إجابة</div>
+    </div>
+    <div class="unanswered-note" id="unansweredNote"></div>
+  </div>
+</div>
+
+<footer class="bottom-note">تجميع وإعداد: م. شريف نبيل — 01032901861</footer>
+
+<script>
+const QUESTIONS = [{"q": "ما الجهاز الذي اعتمد على الصمامات المفرغة في بداية تطور الحواسيب؟", "options": ["المساعد الصوتي", "الهاتف الذكي", "ENIAC", "الحاسب السحابي"], "correct": 2}, {"q": "في أي عقد انتشرت الحواسيب الشخصية PCs؟", "options": ["السبعينيات والثمانينيات", "التسعينيات", "العقد الثاني من الألفية", "الأربعينيات"], "correct": 0}, {"q": "متى أُتيح الإنترنت للاستخدام التجاري؟", "options": ["الثمانينيات", "الأربعينيات", "العقد الأول من الألفية", "التسعينيات"], "correct": 3}, {"q": "ما الذي يصف قانون مور Moore's Law؟", "options": ["تضاعف حجم الحاسب كل عام", "توقف تطور الحوسبة", "تضاعف عدد الترانزستورات في الشريحة كل عامين تقريبًا", "ثبات سرعة المعالجات"], "correct": 2}, {"q": "هل يُعد قانون مور قانونًا فيزيائيًا ثابتًا؟", "options": ["نعم لكنه ينطبق فقط على الهواتف", "نعم، ثابت لا يتغير", "لا، هو ملاحظة تجريبية واتجاه تاريخي", "لا علاقة له بالترانزستورات"], "correct": 2}, {"q": "ما التحدي المرتبط بتيارات التسرب مع تصغير مكونات الشريحة؟", "options": ["توقف الإنترنت", "زيادة تكلفة الورق", "صعوبة التحكم في التيارات مع تصغير المكونات", "زيادة حجم الشريحة"], "correct": 2}, {"q": "ما الوحدة الأساسية التي تعتمد عليها الحوسبة التقليدية؟", "options": ["Bit", "Byte فقط بدون بت", "Pixel", "Qubit"], "correct": 0}, {"q": "ما الذي تعتمد عليه الحوسبة الكمومية؟", "options": ["الأقراص المرنة", "البت التقليدي فقط", "الصمامات المفرغة", "الكيوبت والتراكب الكمومي"], "correct": 3}, {"q": "أي عبارة صحيحة بخصوص الحوسبة الكمومية؟", "options": ["قد تتفوق في فئات محددة من المسائل فقط", "لا علاقة لها بالكيوبت", "تسرّع كل أنواع الحسابات", "بديل كامل للحوسبة التقليدية في كل الاستخدامات"], "correct": 0}, {"q": "ما التحول الاجتماعي المرتبط بالبيع والشراء عبر الإنترنت؟", "options": ["التجارة الإلكترونية", "الدفع غير النقدي", "التعلم عبر الإنترنت", "العمل عن بُعد"], "correct": 0}, {"q": "ما التحدي المحتمل المرتبط بشبكات التواصل الاجتماعي SNS؟", "options": ["اختفاء الهواتف الذكية", "انتشار معلومات غير دقيقة أو انتهاك الخصوصية", "ارتفاع تكلفة الكهرباء", "توقف الإنترنت بالكامل"], "correct": 1}, {"q": "ما الذي يميز الواقع المعزز AR عن الواقع الافتراضي VR؟", "options": ["لا فرق بينهما", "VR يضيف عناصر رقمية إلى الواقع", "كلاهما بيئة رقمية كاملة", "AR يضيف عناصر رقمية إلى العالم الحقيقي، وVR ينقل المستخدم إلى بيئة رقمية كاملة"], "correct": 3}, {"q": "لماذا تعتمد السيارة ذاتية القيادة على الحوسبة الطرفية Edge Computing؟", "options": ["لا علاقة للحوسبة الطرفية بالسيارات", "لأنها أرخص من السحابة دائمًا", "لتقليل زمن الاستجابة واتخاذ قرار فوري وآمن", "لتقليل استهلاك الوقود فقط"], "correct": 2}, {"q": "ما الفرق الأساسي بين الحوسبة السحابية والحوسبة الطرفية؟", "options": ["كلاهما يعالج البيانات في نفس المكان", "السحابة لا تحتاج إلى اتصال بالإنترنت", "السحابة تعالج البيانات على خوادم بعيدة، والطرفية تعالجها قرب مصدرها", "الطرفية دائمًا أبطأ من السحابة"], "correct": 2}, {"q": "رتّب زمنيًا: الحواسيب - الإنترنت التجاري - الهواتف الذكية - الحوسبة السحابية. أي ترتيب صحيح؟", "options": ["السحابة ← الهواتف الذكية ← الإنترنت ← الحواسيب", "الإنترنت ← الحواسيب ← السحابة ← الهواتف الذكية", "الهواتف الذكية ← الحواسيب ← السحابة ← الإنترنت", "الحواسيب ← الإنترنت التجاري ← الهواتف الذكية ← السحابة"], "correct": 3}, {"q": "ما تعريف الذكاء الاصطناعي؟", "options": ["مجال يضم أنظمة تستطيع التعلم والتنبؤ والتعرف وتوليد المحتوى ودعم القرار", "برنامج لحساب المعادلات الرياضية فقط", "جهاز تخزين بيانات فقط", "نوع من أنواع الشاشات"], "correct": 0}, {"q": "ما الفرق بين القاعدة المبرمجة والتعلم من البيانات؟", "options": ["القاعدة تنفذ شرطًا مكتوبًا مسبقًا، والتعلم يستنتج نمطًا من أمثلة سابقة", "لا فرق بينهما", "كلاهما يستنتج الأنماط من البيانات", "القاعدة المبرمجة تحتاج بيانات ضخمة دائمًا"], "correct": 0}, {"q": "ما العلاقة الصحيحة بين AI وML وDL؟", "options": ["AI وML وDL مفاهيم منفصلة تمامًا", "AI مجال أوسع، وML فرع منه، وDL أسلوب يعتمد على شبكات عصبية متعددة الطبقات", "DL أوسع من AI", "ML لا يستخدم البيانات إطلاقًا"], "correct": 1}, {"q": "ماذا تفعل أنظمة GenAI؟", "options": ["تراقب الشبكة فقط", "تنشئ محتوى جديدًا مثل نصوص وصور وصوت وبرمجيات", "تمنع الوصول إلى الإنترنت", "تخزن البيانات فقط دون معالجة"], "correct": 1}, {"q": "ما الدور الأساسي للأوزان Weights في الشبكة العصبية الاصطناعية ANN؟", "options": ["تحويل النص إلى صوت", "تخزين الصور فقط دون تعديل", "منع دخول البيانات إلى الشبكة", "تحديد تأثير كل مدخل وتتغير أثناء التدريب لتقليل الخطأ"], "correct": 3}, {"q": "ما مكونات الشبكة العصبية الاصطناعية؟", "options": ["مدخلات، أوزان، طبقات، مخرج", "خادم، عميل، بروتوكول فقط", "شاشة، لوحة مفاتيح، فأرة", "كاميرا ومستشعر فقط"], "correct": 0}, {"q": "ما هو التعلم العميق Deep Learning؟", "options": ["نوع من أنواع الحوسبة السحابية", "أسلوب من أساليب التعلم الآلي يستخدم شبكات عصبية متعددة الطبقات", "بروتوكول لحماية الشبكة", "قاعدة مبرمجة صراحةً بدون بيانات"], "correct": 1}, {"q": "ما المقصود بالهلوسة Hallucination في الذكاء الاصطناعي التوليدي؟", "options": ["تحسين دقة النموذج تلقائيًا", "توقف النظام عن العمل تمامًا", "زيادة سرعة معالجة البيانات", "إنتاج معلومات غير صحيحة لكنها تبدو معقولة ومقنعة"], "correct": 3}, {"q": "ما الإجراء المناسب قبل استخدام مخرج توليدي في تقرير مدرسي؟", "options": ["حذف المصدر الأصلي", "نشره كما هو دون مراجعة", "اعتبار الثقة في الأسلوب دليلًا على الصحة", "التحقق من مصدر موثوق ومراجعته بشريًا"], "correct": 3}, {"q": "أي مثال يمثل تطبيقًا لـ Machine Learning؟", "options": ["إغلاق جهاز يدويًا", "تصنيف الرسائل المزعجة اعتمادًا على أمثلة سابقة", "طباعة مستند على الورق", "رسم شكل هندسي بمسطرة"], "correct": 1}, {"q": "أي مثال يمثل تطبيقًا لـ Deep Learning؟", "options": ["طباعة تقرير ورقي", "حفظ ملف نصي بسيط", "كتابة قاعدة إذا-فإن بسيطة", "تحليل الصور والتعرف على الكلام باستخدام شبكات متعددة الطبقات"], "correct": 3}, {"q": "أي مثال يمثل تطبيقًا لـ Generative AI؟", "options": ["إنشاء صورة جديدة من وصف نصي مكتوب", "حساب مجموع رقمين بقاعدة ثابتة", "حفظ ملف دون أي تعديل", "إطفاء جهاز تلقائيًا بمؤقت"], "correct": 0}, {"q": "لماذا قد يضعف أداء نموذج Deep Learning أمام حالة نادرة لم تظهر في بيانات التدريب؟", "options": ["لأنه لم يتعلم نمطًا مشابهًا لهذه الحالة", "لأنه يضمن دائمًا إجابة صحيحة", "لأنه لا يتأثر بالبيانات إطلاقًا", "لأنه يتحول تلقائيًا إلى GenAI"], "correct": 0}, {"q": "لماذا لا تُفهم علاقة AI وML وDL وGenAI كاحتواء صارم في كل حالة؟", "options": ["لأن AI لا يشمل ML على الإطلاق", "لأن المفاهيم الأربعة لا علاقة بينها إطلاقًا", "لأن GenAI لا يعتمد على أي نموذج", "لأنها خريطة تعليمية مبسطة وقد تختلف التطبيقات الواقعية"], "correct": 3}, {"q": "أي عبارة صحيحة عن ارتباط GenAI الحديث؟", "options": ["لا يعتمد GenAI على أي تعلم آلي", "تعتمد غالبية أنظمة GenAI الحديثة على التعلم العميق", "GenAI أقدم تاريخيًا من AI", "GenAI لا ينتج نصوصًا أبدًا"], "correct": 1}, {"q": "ما وظيفة نظام التوصية Recommendation System؟", "options": ["تشغيل الموسيقى بلا تحليل بيانات", "ترجمة النصوص فقط", "التعرف على الوجه فقط", "التنبؤ بتفضيلات المستخدم من سلوكه السابق وعرض توصيات"], "correct": 3}, {"q": "أي تطبيق يمثل المساعد الصوتي Voice Assistant؟", "options": ["Siri ومساعد جوجل", "Google Translate", "Netflix", "نظام الدفع الإلكتروني"], "correct": 0}, {"q": "ما وظيفة الترجمة الآلية Machine Translation؟", "options": ["تحليل صور الأشعة الطبية", "التعرف على الوجوه في الصور", "تحويل النص تلقائيًا من لغة إلى أخرى", "توصية المنتجات للمستخدم"], "correct": 2}, {"q": "أي قطاع صناعي يرتبط بتحليل صور الأشعة واكتشاف الأمراض؟", "options": ["الزراعة", "الخدمات اللوجستية", "الرعاية الصحية", "التصنيع"], "correct": 2}, {"q": "أي قطاع يرتبط بالتنبؤ بموعد الحصاد واكتشاف الآفات؟", "options": ["الزراعة", "التصنيع", "الرعاية الصحية", "الخدمات اللوجستية"], "correct": 0}, {"q": "ما المقصود بالصيانة التنبؤية Predictive Maintenance؟", "options": ["إصلاح الآلة بعد تعطلها فقط", "إيقاف المصنع دون سبب", "توقع تعطل الآلات قبل حدوثه اعتمادًا على بيانات سابقة", "استبدال الآلة كل شهر بشكل ثابت"], "correct": 2}, {"q": "أي قطاع يرتبط بتحسين مسارات التوصيل؟", "options": ["الرعاية الصحية", "الخدمات اللوجستية", "الزراعة", "التصنيع فقط"], "correct": 1}, {"q": "ما الذي يبرع فيه الذكاء الاصطناعي؟", "options": ["تحديد المسؤولية القانونية بمفرده", "اتخاذ الأحكام الأخلاقية دون أي حاجة للإشراف", "ضمان العدالة الكاملة في كل قرار", "إيجاد وتصنيف الأنماط في الصور والنصوص والتنبؤ من البيانات"], "correct": 3}, {"q": "ما الذي يتطلب حذرًا عند استخدام الذكاء الاصطناعي؟", "options": ["الأحكام الأخلاقية والقرارات عالية الأثر والبيانات الحساسة", "التعرف على الصور فقط", "معالجة كميات كبيرة من البيانات بسرعة", "التنبؤ الاحتمالي من البيانات"], "correct": 0}, {"q": "ما المقصود بمشكلة الصندوق الأسود Black Box؟", "options": ["صعوبة معرفة كيف توصل النظام إلى حكمه مما يصعّب تقييمه واكتشاف الخطأ", "عدم وجود بيانات كافية للتدريب فقط", "استخدام لون أسود في واجهة النظام", "توقف النظام عن العمل نهائيًا"], "correct": 0}, {"q": "لماذا يجب أن يؤكد طبيب بشري التشخيص النهائي بدلًا من تركه للذكاء الاصطناعي وحده؟", "options": ["لأن القرار الطبي عالي الأثر وقد تتأثر النتيجة بجودة البيانات أو التحيز", "لأن الأطباء أسرع من الحاسب دائمًا", "لأن الذكاء الاصطناعي لا يستطيع تحليل الصور إطلاقًا", "لأن القانون يمنع استخدام أي تقنية في الطب"], "correct": 0}, {"q": "أي مثال يمثل تعاونًا بين الإنسان والآلة؟", "options": ["إلغاء كل أدوات المراجعة", "الإنسان لا يرى مخرجات النظام إطلاقًا", "النظام يقترح تشخيصًا والطبيب يراجعه ويقرر", "النظام يقرر دون أي مراجعة بشرية"], "correct": 2}, {"q": "ما الخطر الذي يجب اختباره عند استخدام AI في فحص طلبات التوظيف؟", "options": ["تحسّن العدالة تلقائيًا دون أي فحص", "انخفاض تكلفة الكهرباء", "التحيز ضد فئة معينة بسبب بيانات التدريب", "زيادة سرعة الشبكة فقط"], "correct": 2}, {"q": "ماذا يعني ضعف التعميم عندما يكون النموذج ممتازًا في بيانات التدريب وضعيفًا في بيانات جديدة؟", "options": ["لا علاقة له بجودة البيانات", "يعني أن النموذج يحتاج إلى بيانات أقل", "مشكلة في قدرة النموذج على التعامل مع بيانات لم يرها من قبل", "دليل على دقة النموذج الكاملة"], "correct": 2}, {"q": "ما السؤال الأهم قبل نشر نظام AI في مؤسسة؟", "options": ["هل يحقق الهدف بدقة وعدالة ويمكن مراقبة مخاطره؟", "هل يلغي كل الموظفين البشريين؟", "هل يعمل دون أي بيانات؟", "هل يبدو حديثًا وجذابًا فقط؟"], "correct": 0}, {"q": "ما تعريف التحيز الخوارزمي Algorithmic Bias؟", "options": ["بطء في سرعة المعالج", "خطأ في الشبكة الكهربائية فقط", "زيادة في تكلفة الجهاز", "نمط في مخرجات الذكاء الاصطناعي قد يؤدي إلى نتائج غير عادلة أو ضارة"], "correct": 3}, {"q": "من أي مصدر قد ينشأ التحيز الخوارزمي؟", "options": ["بيانات تدريب غير ممثلة أو نزعات تمييزية سابقة أو تصميم النظام", "سرعة معالجة الحاسوب فقط", "نوع الشاشة المستخدمة", "لون واجهة البرنامج"], "correct": 0}, {"q": "ما الذكاء الاصطناعي القابل للتفسير Explainable AI (XAI)؟", "options": ["أداة لتشفير الملفات فقط", "أساليب تساعد البشر على فهم العوامل التي أدت إلى قرار النظام", "نظام لتسريع الإنترنت", "برنامج لحذف البيانات تلقائيًا"], "correct": 1}, {"q": "ما الفرق بين XAI والمساءلة Accountability؟", "options": ["XAI يشرح سبب القرار، والمساءلة تحدد من يُحاسَب عن النتيجة", "كلاهما يعني نفس الشيء تمامًا", "المساءلة تشرح سبب القرار فقط", "XAI يحدد العقوبة القانونية"], "correct": 0}, {"q": "ما المقصود بالشفافية Transparency في نظام AI؟", "options": ["إتاحة معلومات واضحة عن النظام واستخدامه وعملية اتخاذ القرار وحدوده", "نشر كلمات المرور الخاصة بالمستخدمين", "إخفاء طريقة عمل النظام عن المستخدمين", "حذف سجل القرارات السابقة"], "correct": 0}, {"q": "ما المبادئ الأربعة للاستخدام المسؤول للذكاء الاصطناعي؟", "options": ["الإنترنت، الكهرباء، الصيانة، التخزين", "الذاكرة، المعالج، الشاشة، البطارية", "السرعة، التكلفة، الحجم، اللون", "العدالة، الشفافية، حماية الخصوصية، المساءلة"], "correct": 3}, {"q": "أي مبدأ يرتبط بعدم التمييز ظلمًا ضد شخص أو مجموعة؟", "options": ["الشفافية", "حماية الخصوصية", "المساءلة", "العدالة Fairness"], "correct": 3}, {"q": "أي مبدأ يرتبط بتحديد الجهات المسؤولة عن قرارات النظام وإمكان محاسبتها؟", "options": ["الشفافية", "المساءلة Accountability", "الخصوصية", "العدالة"], "correct": 1}, {"q": "ما إحدى قضايا الخصوصية المرتبطة بالذكاء الاصطناعي؟", "options": ["تحسين دقة الشاشة", "تقليل استهلاك البطارية", "زيادة سرعة المعالج", "المراقبة والتعرف على الأفراد عبر كاميرات الأماكن العامة"], "correct": 3}, {"q": "ما الإجراء الذي يقلل من أثر بيانات تدريب غير ممثلة؟", "options": ["تجاهل التحقق من النتائج", "استخدام بيانات فئة واحدة فقط", "تقليل حجم بيانات الاختبار", "جمع بيانات متنوعة واختبار النتائج عبر فئات مختلفة"], "correct": 3}, {"q": "أي إجراء يحمي خصوصية المستخدم في تطبيق يستخدم الذكاء الاصطناعي؟", "options": ["نشر سجلات المستخدمين علنًا", "تجاهل موافقة المستخدم تمامًا", "جمع كل البيانات الممكنة بلا سبب واضح", "جمع الحد الأدنى من البيانات واستخدامها لغرض واضح"], "correct": 3}, {"q": "إذا استخدم نموذج توظيف عاملًا لا علاقة له بالكفاءة لكنه يرتبط بمجموعة اجتماعية معينة، فما الخطر الناتج؟", "options": ["تحسّن العدالة بشكل مباشر", "زيادة الشفافية تلقائيًا", "انخفاض التحيز بشكل كامل", "تمييز غير مباشر ضد تلك المجموعة"], "correct": 3}, {"q": "ما أفضل طريقة لاكتشاف تحيز نموذج قبل نشره؟", "options": ["اختباره على مجموعات وظروف مختلفة ومقارنة النتائج", "حذف الحالات الصعبة من الاختبار", "الاعتماد على الانطباع الشخصي", "اختباره على مثال واحد فقط"], "correct": 0}, {"q": "ما المسؤولية الأخلاقية للمستخدم إذا أنتج GenAI معلومة غير صحيحة؟", "options": ["التحقق منها وعدم نشرها كحقيقة قبل المراجعة", "نشرها فورًا لأنها تبدو مقنعة", "اعتبار الأداة وحدها مسؤولة دون أي مراجعة", "حذف مصدرها دون تحقق"], "correct": 0}, {"q": "ما التوازن الأفضل بين الابتكار والاحتياط عند تطبيق الذكاء الاصطناعي؟", "options": ["نشر النظام فورًا دون أي اختبار", "منع كل أنواع الابتكار التقني", "تجربة مضبوطة مع تقييم مخاطر وإشراف قبل التوسع", "تجاهل رأي المتضررين من النظام"], "correct": 2}];
+const POINTS_PER_Q = 2;
+const TOTAL_POINTS = QUESTIONS.length * POINTS_PER_Q;
+
+const state = QUESTIONS.map(() => ({answered:false, selected:null, isCorrect:null}));
+const LETTERS = ["أ","ب","ج","د"];
+
+const container = document.getElementById('questionsContainer');
+
+QUESTIONS.forEach((item, qi) => {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = 'qcard-' + qi;
+
+  const top = document.createElement('div');
+  top.className = 'q-top';
+  top.innerHTML = `
+    <div class="q-num-badge">${qi+1}</div>
+    <div class="q-text">${item.q}</div>
+    <div class="q-points">2 درجة</div>
+  `;
+  card.appendChild(top);
+
+  const optList = document.createElement('div');
+  optList.className = 'opt-list';
+
+  item.options.forEach((opt, oi) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<span class="opt-letter">${LETTERS[oi]}</span><span>${opt}</span>`;
+    btn.addEventListener('click', () => selectAnswer(qi, oi));
+    optList.appendChild(btn);
+  });
+
+  card.appendChild(optList);
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback-tag';
+  fb.style.display = 'none';
+  fb.id = 'fb-' + qi;
+  card.appendChild(fb);
+
+  container.appendChild(card);
+});
+
+function selectAnswer(qi, oi){
+  if(state[qi].answered) return;
+  const item = QUESTIONS[qi];
+  const isCorrect = (oi === item.correct);
+  state[qi].answered = true;
+  state[qi].selected = oi;
+  state[qi].isCorrect = isCorrect;
+
+  const card = document.getElementById('qcard-' + qi);
+  card.classList.add('answered');
+  const buttons = card.querySelectorAll('.opt-btn');
+  buttons.forEach((b, idx) => {
+    b.disabled = true;
+    if(idx === item.correct){
+      b.classList.add('correct-answer');
+    }
+    if(idx === oi && !isCorrect){
+      b.classList.add('wrong-answer');
+    }
+    if(idx !== oi && idx !== item.correct){
+      b.classList.add('dim');
+    }
+  });
+
+  const fb = document.getElementById('fb-' + qi);
+  fb.style.display = 'inline-flex';
+  if(isCorrect){
+    fb.className = 'feedback-tag ok';
+    fb.textContent = '✔ إجابة صحيحة (+2 درجة)';
+  } else {
+    fb.className = 'feedback-tag no';
+    fb.textContent = '✘ إجابة خاطئة — الإجابة الصحيحة موضحة باللون الأخضر';
+  }
+
+  updateScoreboard();
+}
+
+function updateScoreboard(){
+  const answered = state.filter(s => s.answered).length;
+  const correct = state.filter(s => s.isCorrect === true).length;
+  const wrong = state.filter(s => s.isCorrect === false).length;
+
+  document.getElementById('answeredCount').textContent = answered + '/' + QUESTIONS.length;
+  document.getElementById('correctCount').textContent = correct;
+  document.getElementById('wrongCount').textContent = wrong;
+
+  const pct = Math.round((answered / QUESTIONS.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = pct + '% مكتمل';
+}
+
+document.getElementById('finishBtn').addEventListener('click', () => {
+  const answered = state.filter(s => s.answered).length;
+  const correct = state.filter(s => s.isCorrect === true).length;
+  const wrong = state.filter(s => s.isCorrect === false).length;
+  const skipped = QUESTIONS.length - answered;
+  const score = correct * POINTS_PER_Q;
+
+  document.getElementById('finalScore').textContent = score + ' / ' + TOTAL_POINTS;
+  document.getElementById('finalCorrect').textContent = correct;
+  document.getElementById('finalWrong').textContent = wrong;
+  document.getElementById('finalSkipped').textContent = skipped;
+
+  const percent = Math.round((score / TOTAL_POINTS) * 100);
+  let msg = '';
+  if(percent >= 90) msg = 'ممتاز! مستوى رائع جدًا 🌟';
+  else if(percent >= 75) msg = 'جيد جدًا، استمر في المذاكرة 👏';
+  else if(percent >= 50) msg = 'مستوى مقبول، تحتاج مزيدًا من المراجعة 📘';
+  else msg = 'يُنصح بمراجعة الدروس الأربعة جيدًا قبل الامتحان النهائي 📖';
+  document.getElementById('finalMsg').textContent = 'النسبة المئوية: ' + percent + '% — ' + msg;
+
+  const note = document.getElementById('unansweredNote');
+  note.textContent = skipped > 0 ? ('لم تتم الإجابة عن ' + skipped + ' سؤال — أكملها لمعرفة نتيجتك الحقيقية.') : '';
+
+  document.getElementById('resultPanel').style.display = 'block';
+  document.getElementById('resultPanel').scrollIntoView({behavior:'smooth', block:'start'});
+});
+</script>
+
+</body>
+</html>
